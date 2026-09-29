@@ -9,7 +9,7 @@
 
 **Fodium** est une plateforme de billetterie digitale sécurisée conçue pour le grand public en Afrique de l’Ouest (Dakar, Diamniadio, Abidjan). Son objectif principal se résume en quatre étapes fluides :
 
-$$\text{DÉCOUVRIR} \longrightarrow \text{CHOISIR} \longrightarrow \text{ACHETER} \longrightarrow \text{PARTICIPER}$$
+
 
 Contrairement aux catalogues de billetterie froids et administratifs, Fodium intègre dès l’achat de billet la dimension critique du **transport événementiel** (*Fodium Transport*), résolvant le cauchemar des embouteillages, du stationnement introuvable et du retour nocturne complexe.
 
@@ -102,7 +102,7 @@ Fodium propose un **parcours unifié et continu** :
   * Uniquement des propriétés accélérées matériellement (`transform`, `opacity`).
   * Dépliement fluide du sélecteur de point de départ lors de l'activation du mode « Billet + Navette ».
   * Transition d'état de paiement fluide simulant les étapes de validation bancaire.
-  * Durée d'animation $\le 200\text{ms}$ pour les retours tactiles (`active:scale-[0.98]`).
+ 
 
 ---
 
@@ -131,7 +131,22 @@ Toutes les données sont gérées localement dans `src/data/events.ts` et `src/c
 
 ---
 
-## 12. Pistes d'Évolution Future
+## 12. Lancement en Local
+
+```bash
+# 1. Installer les dépendances
+npm install
+
+# 2. Lancer le serveur de développement
+npm run dev
+
+# 3. Ouvrir dans le navigateur
+# http://localhost:3000
+```
+
+---
+
+## 13. Pistes d'Évolution Future
 
 Avec plus de temps et en intégrant les services de production :
 1. Intégration des webhooks réels de l'API Wave Business et Orange Money Merchant.

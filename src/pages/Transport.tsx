@@ -12,6 +12,10 @@ import {
   Users,
   Leaf,
   Navigation,
+  Wifi,
+  Zap,
+  Map,
+  Smartphone,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useBooking } from '../context/BookingContext';
@@ -20,6 +24,7 @@ export const Transport: React.FC = () => {
   const { showToast } = useBooking();
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [activeFeature, setActiveFeature] = useState(0);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +45,7 @@ export const Transport: React.FC = () => {
       icon: Navigation,
       title: 'Trajets directs & prioritaires',
       description:
-        'Évitez les embouteillages et les kilomètres à pied. Dépose réservée au pied de l’entrée de l’événement.',
+        'Évitez les embouteillages et les kilomètres à pied. Dépose réservée au pied de l\'entrée de l\'événement.',
     },
     {
       icon: Clock,
@@ -52,9 +57,31 @@ export const Transport: React.FC = () => {
       icon: Leaf,
       title: 'Mobilité collective & écoresponsable',
       description:
-        'Une navette Fodium remplace jusqu’à 30 voitures individuelles sur la corniche dakaroise.',
+        'Une navette Fodium remplace jusqu\'à 30 voitures individuelles sur la corniche dakaroise.',
     },
   ];
+
+  const techFeatures = [
+    { icon: Wifi, label: 'WiFi à bord', desc: 'Connexion haut débit' },
+    { icon: Zap, label: 'Prises USB', desc: 'Recharge mobile' },
+    { icon: Map, label: 'Tracking GPS', desc: 'Suivi temps réel' },
+    { icon: Smartphone, label: 'App dédiée', desc: 'Billet + embarquement' },
+  ];
+
+  const routes = [
+    { id: 'L01', name: 'Almadies ⇄ Monument Renaissance', detail: 'Sea Plaza, Mamelles · 25 min', color: 'orange' },
+    { id: 'L02', name: 'Plateau ⇄ CICAD Diamniadio', detail: 'Gare TER, Indépendance · 40 min', color: 'amber' },
+    { id: 'L03', name: 'Mermoz/Point E ⇄ Corniche Ouest', detail: 'Piscine Olympique, Mermoz · 20 min', color: 'yellow' },
+    { id: 'L04', name: 'Rufisque ⇄ Monument Renaissance', detail: 'Gare TER Rufisque · 50 min', color: 'orange' },
+    { id: 'L05', name: 'Ngor/Almadies ⇄ CICAD Diamniadio', detail: 'King Fahd Palace · 50 min', color: 'amber' },
+    { id: 'L06', name: 'Guédiawaye ⇄ Corniche Ouest', detail: 'Marché Guédiawaye · 35 min', color: 'yellow' },
+  ];
+
+  const colorClasses = {
+    orange: 'bg-orange-500/10 text-orange-400 border-orange-500/30',
+    amber: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+    yellow: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30',
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 space-y-16 pb-24">
@@ -98,7 +125,7 @@ export const Transport: React.FC = () => {
                 </button>
               </div>
               <p className="text-[11px] text-slate-400">
-                Soyez les premiers informés de l’ouverture du réseau de navettes.
+                Soyez les premiers informés de l\'ouverture du réseau de navettes.
               </p>
             </form>
           ) : (
@@ -144,30 +171,73 @@ export const Transport: React.FC = () => {
         </div>
       </div>
 
-      {/* Feature Pillars */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {features.map((item, idx) => {
-          const IconComp = item.icon;
-          return (
-            <div
-              key={idx}
-              className="p-6 rounded-3xl bg-[#121824] border border-slate-800 hover:border-amber-500/40 transition-colors flex items-start gap-4"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
-                <IconComp className="w-6 h-6" />
+      {/* Feature Pillars - Interactive Carousel */}
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-white">Une expérience pensée pour vous</h2>
+          <div className="flex gap-1">
+            {features.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveFeature(idx)}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  activeFeature === idx ? 'bg-amber-400 w-6' : 'bg-slate-600 hover:bg-slate-400'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <motion.div
+          key={activeFeature}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          {features.map((item, idx) => {
+            const IconComp = item.icon;
+            return (
+              <div
+                key={idx}
+                className="p-6 rounded-3xl bg-[#121824] border border-slate-800 hover:border-amber-500/40 transition-colors flex items-start gap-4"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
+                  <IconComp className="w-6 h-6" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-base font-bold text-white">{item.title}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-bold text-white">{item.title}</h3>
-                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </motion.div>
       </div>
 
-      {/* Network Preview Concept */}
+      {/* Tech Stack Preview */}
+      <div className="p-6 rounded-3xl bg-gradient-to-br from-[#121824] to-[#0A0D14] border border-slate-800 space-y-6">
+        <h2 className="text-xl font-bold text-white">Équipements embarqués</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {techFeatures.map((item, idx) => {
+            const IconComp = item.icon;
+            return (
+              <div key={idx} className="p-4 rounded-2xl bg-[#0B0F17] border border-slate-800 text-center space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto">
+                  <IconComp className="w-5 h-5" />
+                </div>
+                <div className="font-bold text-white text-sm">{item.label}</div>
+                <div className="text-[11px] text-slate-400">{item.desc}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Network Preview Concept - Expanded */}
       <div className="p-8 rounded-3xl bg-gradient-to-br from-[#121824] to-[#0A0D14] border border-slate-800 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -187,24 +257,42 @@ export const Transport: React.FC = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 rounded-2xl bg-[#0B0F17] border border-slate-800 space-y-1">
-            <span className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Ligne 01</span>
-            <div className="text-sm font-bold text-white">Almadies ⇄ Monument Renaissance</div>
-            <div className="text-xs text-slate-400">Départ Sea Plaza & Mamelles</div>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {routes.map((route) => (
+            <div
+              key={route.id}
+              className={`p-4 rounded-2xl border space-y-1 ${colorClasses[route.color as keyof typeof colorClasses]}`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono uppercase tracking-wider">{route.id}</span>
+                <Bus className="w-4 h-4" />
+              </div>
+              <div className="text-sm font-bold text-white">{route.name}</div>
+              <div className="text-xs text-slate-400">{route.detail}</div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-          <div className="p-4 rounded-2xl bg-[#0B0F17] border border-slate-800 space-y-1">
-            <span className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Ligne 02</span>
-            <div className="text-sm font-bold text-white">Plateau ⇄ CICAD Diamniadio</div>
-            <div className="text-xs text-slate-400">Gare TER & Place de l’Indépendance</div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-[#0B0F17] border border-slate-800 space-y-1">
-            <span className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Ligne 03</span>
-            <div className="text-sm font-bold text-white">Mermoz / Point E ⇄ Corniche Ouest</div>
-            <div className="text-xs text-slate-400">Piscine Olympique & Rond-point Mermoz</div>
-          </div>
+      {/* How it works preview */}
+      <div className="p-8 rounded-3xl bg-[#121824] border border-slate-800 space-y-6">
+        <h2 className="text-xl font-bold text-white">Comment ça marchera (Aperçu)</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { step: '1', title: 'Réservez votre pass', desc: 'Choisissez "Billet + Navette" sur Fodium, sélectionnez votre point de départ.' },
+            { step: '2', title: 'Recevez votre QR', desc: 'Un QR unique pour le billet ET l\'accès navette arrive dans votre portefeuille Fodium.' },
+            { step: '3', title: 'Embarquez', desc: 'Présentez votre QR au chauffeur au point de ramassage. C\'est tout.' },
+          ].map((item, idx) => (
+            <div key={idx} className="p-5 rounded-2xl bg-[#0B0F17] border border-slate-800 relative">
+              <span className="absolute -top-3 left-3 w-10 h-10 rounded-full bg-amber-500 text-slate-950 font-black flex items-center justify-center text-xl shadow-lg">
+                {item.step}
+              </span>
+              <div className="pt-6 space-y-1">
+                <h3 className="font-bold text-white">{item.title}</h3>
+                <p className="text-xs text-slate-400">{item.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
